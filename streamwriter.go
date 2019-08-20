@@ -69,7 +69,7 @@ func (s *StreamWriter) Append(expectedVersion *int, events ...*Event) error {
 // If an error occurred outside of the http request another type of error will be returned
 // such as a *url.Error in cases where the streamwriter is unable to connect to the server.
 func (s *StreamWriter) WriteMetaData(stream string, metadata interface{}) error {
-	m := NewEvent("", "MetaData", metadata, nil)
+	m := NewEvent("", "$metadata", metadata, nil)
 	mURL, _, err := s.client.GetMetadataURL(stream)
 	if err != nil {
 		return err
