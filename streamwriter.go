@@ -69,12 +69,13 @@ func (s *StreamWriter) Append(expectedVersion *int, events ...*Event) error {
 // If an error occurred outside of the http request another type of error will be returned
 // such as a *url.Error in cases where the streamwriter is unable to connect to the server.
 func (s *StreamWriter) WriteMetaData(stream string, metadata interface{}) error {
-	m := NewEvent("", "MetaData", metadata, nil)
 	mURL, _, err := s.client.GetMetadataURL(stream)
 	if err != nil {
 		return err
 	}
-	req, err := s.client.NewRequest(http.MethodPost, mURL, m)
+
+	events := []*Event{NewEvent("", "MetaData", metadata, nil)}
+	req, err := s.client.NewRequest(http.MethodPost, mURL, events)
 	if err != nil {
 		return err
 	}
@@ -82,9 +83,5 @@ func (s *StreamWriter) WriteMetaData(stream string, metadata interface{}) error 
 	req.Header.Set("Content-Type", "application/vnd.eventstore.events+json")
 
 	_, err = s.client.Do(req, nil)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
